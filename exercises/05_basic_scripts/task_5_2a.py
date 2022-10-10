@@ -49,3 +49,22 @@ bin_ip = "00001010000000010000000111000011"
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 """
+net = input('Network: ')
+addr, mask = net.split('/')
+mask=int(mask)
+template='''
+Network:
+{0:<10}{1:<10}{2:<10}{3:<10}
+{0:08b}  {1:08b}  {2:08b}  {3:08b}
+
+Mask:
+/{4}
+{5:<10}{6:<10}{7:<10}{8:<10}
+{5:08b}  {6:08b}  {7:08b}  {8:08b}
+'''
+mask2='1'*mask+'0'*(32-mask)
+masklist=[int(mask2[:8],2),int(mask2[8:16],2),int(mask2[16:24],2),int(mask2[24:32],2)]
+addrlist=[int(i) for i in addr.split('.')]
+addrlist2='{0:08b}{1:08b}{2:08b}{3:08b}'.format(*addrlist)[:mask]+'0'*(32-mask)
+addrlist=[int(addrlist2[:8],2),int(addrlist2[8:16],2),int(addrlist2[16:24],2),int(addrlist2[24:32],2)]
+print(template.format(*addrlist, int(mask), *masklist))
