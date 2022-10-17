@@ -12,3 +12,14 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 """
+addr = [int(i) for i in input().split('.')]
+if 0<addr[0]<=223:
+    print('unicast')
+elif 224<=addr[0]<=239:
+    print('multicast')
+elif addr[0]==addr[1]==addr[2]==addr[3]==255:
+    print('local broadcast')
+elif addr[0]==addr[1]==addr[2]==addr[3]==0:
+    print('unassigned')
+else:
+    print('unused')

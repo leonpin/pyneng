@@ -17,3 +17,9 @@
 """
 
 ignore = ["duplex", "alias", "configuration"]
+import sys
+#sys.argv[1]
+with open(sys.argv[1], 'r') as f:
+    for line in f:
+        if not line.startswith('!') and (set(line.split()) & set(ignore)) == set():
+            print(line, end='')
