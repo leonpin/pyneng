@@ -80,3 +80,36 @@ infiles = [
     "sh_cdp_n_r2.txt",
     "sh_cdp_n_r3.txt",
 ]
+
+input_value = {
+    ("R3", "Eth0/1"): ("R4", "Eth0/0"),
+    ("R3", "Eth0/2"): ("R5", "Eth0/0"),
+    ("R4", "Eth0/0"): ("R3", "Eth0/1"),
+    ("R5", "Eth0/0"): ("R3", "Eth0/2"),
+    ("R3", "Eth0/0"): ("SW1", "Eth0/3"),
+}
+
+
+from task_11_2 import create_network_map
+from draw_network_graph import draw_topology
+from pprint import pprint
+'''
+def unique_network_map(topology_dict):
+    topology = topology_dict.copy()
+    for key, value in topology_dict.items():
+        if topology.get(value) == key:
+            del topology[key]
+    return topology
+'''
+def unique_network_map(topology_dict):
+    network_map = {}
+    for key, value in topology_dict.items():
+        key, value = sorted([key, value])
+        network_map[key] = value
+    return network_map
+
+if __name__ == "__main__":
+    topology = create_network_map(infiles)
+    topology = unique_network_map(topology)
+    draw_topology(topology)
+    pprint(unique_network_map(input_value))
