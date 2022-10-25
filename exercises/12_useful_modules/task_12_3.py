@@ -18,13 +18,3 @@ Reachable    Unreachable
              10.1.1.9
 
 """
-
-from tabulate import tabulate
-
-def print_ip_table(ipr, ipu):
-    result = {'Reachable': ipr, 'Unreachable': ipu}
-    print(tabulate(result, headers='keys'))
-    return
-
-if __name__ == "__main__":
-    print_ip_table(['10.1.1.1', '10.1.1.2'], ['10.1.1.7', '10.1.1.8'])
