@@ -42,10 +42,36 @@
 
 Кроме того, создан список заголовков (headers), который должен быть записан в CSV.
 """
-
+import re
 import glob
+import csv
 
-sh_version_files = glob.glob("sh_vers*")
-# print(sh_version_files)
+def parse_sh_version(outs):
+    regex = (r'Cisco IOS Software.+? Version (?P<ios>\S+),'
+             r'|System image file is "(?P<image>\S+)"'
+             r'|uptime is (?P<uptime>.+)\n')
+    match = re.finditer(regex, outs)
+    data = {}
+    for m in match:
+        data[m.lastgroup] = m.group(m.lastgroup)
+    result = (data['ios'], data['image'], data['uptime'])
+    return result
 
-headers = ["hostname", "ios", "image", "uptime"]
+def write_inventory_to_csv(data_filenames, csv_filename):
+    headers = ["hostname", "ios", "image", "uptime"]
+    with open(csv_filename, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(headers)
+        for file in data_filenames:
+            with open(file) as f:
+                name = re.search(r'version_(\S+)\.',file).group(1)
+                row = parse_sh_version(f.read())
+                writer.writerow((name,) + row)
+    return
+
+if __name__ == "__main__":
+    sh_version_files = glob.glob("sh_vers*")
+    # print(sh_version_files)
+    write_inventory_to_csv(sh_version_files, 'r_inventory.csv')
+    with open('r_inventory.csv') as f:
+        print(f.read())
