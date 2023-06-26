@@ -37,6 +37,31 @@
 интерфейсов, но при этом не проверяет настроенные номера тунелей и другие команды.
 Они должны быть, но тест упрощен, чтобы было больше свободы выполнения.
 """
+from netmiko import ConnectHandler
+from task_20_5 import create_vpn_config
+import yaml
+import re
+
+def tun_number(src_tun, dst_tun):
+    tuns = set([int(tun) for tun in re.findall(r'interface Tunnel(\d+)', src_tun + dst_tun)])
+    if not tuns:
+        return 0
+    for i in range(max(tuns)+2):
+        if not (i in set(tuns)):
+            tun = i
+    return tun
+
+def configure_vpn(src_device_params, dst_device_params, src_template, dst_template, vpn_data_dict):
+    with ConnectHandler(**src_device_params) as src, ConnectHandler(**dst_device_params) as dst:
+        src.enable()
+        dst.enable()
+        src_tun = src.send_command("sh run | i ^interface Tunnel")
+        dst_tun = dst.send_command("sh run | i ^interface Tunnel")
+        vpn_data_dict['tun_num'] = tun_number(src_tun, dst_tun)
+        cfg1, cfg2 = create_vpn_config(src_template, dst_template, vpn_data_dict)
+        src_rep = src.send_config_set(cfg1.split('\n'))
+        dst_rep = dst.send_config_set(cfg2.split('\n'))
+    return src_rep, dst_rep
 
 data = {
     "tun_num": None,
@@ -45,3 +70,9 @@ data = {
     "tun_ip_1": "10.0.1.1 255.255.255.252",
     "tun_ip_2": "10.0.1.2 255.255.255.252",
 }
+if __name__ == "__main__":
+    template1 = 'templates/gre_ipsec_vpn_1.txt'
+    template2 = 'templates/gre_ipsec_vpn_2.txt'
+    with open('devices.yaml') as f:
+        devices = yaml.safe_load(f)
+    print(configure_vpn(devices[0], devices[1], template1, template2, data))

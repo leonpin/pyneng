@@ -32,3 +32,28 @@ interface Gi0/10
 Не копируйте код функции generate_config.
 
 """
+
+from task_20_1 import generate_config
+import yaml
+
+template = """
+vlan {{ vlan_id }}
+ name {{ name }}
+{% for intf in access %}
+interface {{ intf }}
+ switchport mode access
+ switchport access vlan {{ vlan_id }}
+{% endfor %}
+{% for intf in trunk %}
+interface {{ intf }}
+ switchport trunk allowed vlan add {{ vlan_id }}
+{% endfor %}
+"""
+templatefile = 'templates/add_vlan_to_switch.txt'
+datafile = 'data_files/add_vlan_to_switch.yaml'
+with open(templatefile, 'w') as f:
+    f.write(template)
+if __name__ == "__main__":
+    with open(datafile) as f:
+        data = yaml.safe_load(f)
+    print(generate_config(templatefile, data))

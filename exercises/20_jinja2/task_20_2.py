@@ -17,3 +17,17 @@
 В качестве данных, используйте информацию из файла data_files/router_info.yml
 
 """
+from task_20_1 import generate_config
+import yaml
+
+template = """
+{% include 'cisco_base.txt' %}
+{% include 'alias.txt' %}
+{% include 'eem_int_desc.txt' %}
+"""
+filename = 'templates/cisco_router_base.txt'
+with open(filename, 'w') as f:
+    f.write(template)
+with open('data_files/router_info.yml') as f:
+    data = yaml.safe_load(f)
+print(generate_config(filename, data))

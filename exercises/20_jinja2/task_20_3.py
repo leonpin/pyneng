@@ -55,3 +55,31 @@ interface Fa0/1.100
 interface Fa0/1.200
  ip ospf hello-interval 1
 """
+
+from task_20_1 import generate_config
+import yaml
+
+template = """
+router ospf {{ process }}
+ router-id {{ router_id }}
+ auto-cost reference-bandwidth {{ ref_bw }}
+ {% for networks in ospf_intf %}
+ network {{ networks.ip }} 0.0.0.0 area {{ networks.area }}
+ {% if networks.passive %}
+ passive-interface {{ networks.name }}
+ {% endif %}
+ {% endfor %}
+{% for networks in ospf_intf if not networks.passive%}
+interface {{ networks.name }}
+ ip ospf hello-interval 1
+{% endfor %}
+"""
+templatefile = 'templates/ospf.txt'
+datafile = 'data_files/ospf.yml'
+with open(templatefile, 'w') as f:
+    f.write(template)
+
+if __name__ == "__main__":
+    with open(datafile) as f:
+        data = yaml.safe_load(f)
+    print(generate_config(templatefile, data))
