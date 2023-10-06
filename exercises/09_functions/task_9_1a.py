@@ -62,9 +62,8 @@ def generate_access_config(intf_vlan_mapping, access_template, psecurity=None):
                 result.append(f'{e} {v}')
             else:
                 result.append(f'{e}')
-        if not (psecurity is None):
-            for e in port_security_template:
-                result.append(f'{e}')
+        if psecurity:
+            result.extend(psecurity)
     return result
 
 #print(generate_access_config(access_config, access_mode_template, port_security_template))

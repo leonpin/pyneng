@@ -28,8 +28,11 @@ import re
 
 def get_ip_from_cfg(config_file):
     with open(config_file) as f:
-        match = re.finditer(r'ip address (\S+) (\S+)',f.read())
-        result = [m.groups() for m in match]
+        result = re.findall(r'ip address (\S+) (\S+)',f.read())
+
+
+        #match = re.finditer(r'ip address (\S+) (\S+)',f.read())
+        #result = [m.groups() for m in match]
     return result
 
 if __name__ == "__main__":

@@ -33,10 +33,41 @@ ErrorInCommand                            Traceback (most recent call last)
 ErrorInCommand: При выполнении команды "sh ip br" на устройстве 192.168.100.1 возникла ошибка "Invalid input detected at '^' marker."
 
 """
+from netmiko.cisco.cisco_ios import CiscoIosSSH
+import re
 
+class MyNetmiko(CiscoIosSSH):
+    def __init__(self, **device_params):
+        super().__init__(**device_params)
+        self.enable()
+
+    def _check_error_in_command(self, command, output):
+        error = re.search(r'% (.+)', output)
+        if error:
+            raise ErrorInCommand(f'При выполнении команды "{command}" на устройстве {self.host} возникла ошибка "{error.group(1)}"')
+        return
+
+    def send_command(self, command, *args, **kwargs):
+        output = super().send_command(command, *args, **kwargs)
+        self._check_error_in_command(command, output)
+        return output
 
 class ErrorInCommand(Exception):
     """
     Исключение генерируется, если при выполнении команды на оборудовании,
     возникла ошибка.
     """
+    pass
+
+
+device_params = {
+    "device_type": "cisco_ios",
+    "host": "192.168.100.1",
+    "username": "cisco",
+    "password": "cisco",
+    "secret": "cisco",
+}
+
+if __name__ == '__main__':
+    r1 = MyNetmiko(**device_params)
+    print(r1.send_command('sh ip int br'))

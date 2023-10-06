@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Задание 7.2a
@@ -21,5 +22,5 @@ import sys
 #sys.argv[1]
 with open(sys.argv[1], 'r') as f:
     for line in f:
-        if not line.startswith('!') and (set(line.split()) & set(ignore)) == set():
+        if not line.startswith('!') and not (set(line.split()) & set(ignore)):
             print(line, end='')

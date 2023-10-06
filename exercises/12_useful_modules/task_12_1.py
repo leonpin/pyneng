@@ -25,7 +25,7 @@ def ping_ip_addresses(ip_list):
     unavail = []
     for ip in ip_list:
         reply = subprocess.run(['ping', '-c', '1', ip],
-                               stdout=subprocess.DEVNULL, encoding='utf-8')
+                               stdout=subprocess.DEVNULL)
         if reply.returncode:
             unavail.append(ip)
         else:
@@ -35,4 +35,3 @@ def ping_ip_addresses(ip_list):
 if __name__ == '__main__':
     t = ping_ip_addresses(['10.0.0.1', '8.8.8.8', '192.168.1.1'])
     pprint(f'avail {t[0]}, unavail {t[1]}')
-

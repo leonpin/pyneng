@@ -34,8 +34,8 @@ def get_int_vlan_map(config_filename):
             elif 'access vlan' in line:
                 ac[intf] = int(line.split()[-1])
             elif 'allowed vlan' in line:
-                tr[intf] = [int(s) for s in list(line.split()[-1].split(','))]
+                tr[intf] = [int(s) for s in line.split()[-1].split(',')]
     result = ac, tr
     return result
 
-#print(get_int_vlan_map('config_sw1.txt'))
+print(get_int_vlan_map('config_sw1.txt'))

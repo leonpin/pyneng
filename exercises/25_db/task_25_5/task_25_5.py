@@ -28,7 +28,7 @@
 можно с помощью функции datetime в запросе SQL.
 Синтаксис использования такой:
 sqlite> insert into dhcp (mac, ip, vlan, interface, switch, active, last_active)
-   ...> values ('00:09:BC:3F:A6:50', '192.168.100.100', '1', 'FastEthernet0/7', 'sw1', '0', datetime('now'));
+   ...> values ('00:09:BC:3F:A6:50', '192.168.100.100', '1', 'FastEthernet0/7', 'sw1', '0', r);
 
 То есть вместо значения, которое записывается в базу данных,
 надо указать datetime('now').

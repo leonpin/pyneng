@@ -35,9 +35,9 @@ object network LOCAL_10.1.9.5
 
 import re
 
-template = ['object network LOCAL_{ip}\n',
-            ' host {ip}\n',
-            ' nat (inside,outside) static interface service {prot} {i_port} {o_port}\n']
+template = '''object network LOCAL_{ip}
+ host {ip}
+ nat (inside,outside) static interface service {prot} {i_port} {o_port}\n'''
 
 regex = r'ip nat inside source static (?P<prot>\w+) (?P<ip>\S+) (?P<i_port>\d+) interface \S+ (?P<o_port>\d+)'
 
@@ -45,8 +45,8 @@ def convert_ios_nat_to_asa(inp_file, out_file):
     with open(inp_file) as inpf, open(out_file, 'w') as outf:
         for line in inpf:
             match = re.search(regex, line)
-            #print(''.join(template).format(**match.groupdict()), end='')
-            outf.write(''.join(template).format(**match.groupdict()))
+            print(template.format(**match.groupdict()), end='')
+            #outf.write(''.join(template).format(**match.groupdict()))
     return
 
 if __name__ == "__main__":

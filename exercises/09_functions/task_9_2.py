@@ -68,8 +68,9 @@ def generate_trunk_config(intf_vlan_mapping, trunk_template):
         for e in trunk_template:
             if e.endswith('allowed vlan'):
                 result.append(f"{e} {','.join([str(s) for s in v])}")
+                print(v)
             else:
                 result.append(f'{e}')
     return result
 
-#print(generate_trunk_config(trunk_config_2, trunk_mode_template))
+print(generate_trunk_config(trunk_config_2, trunk_mode_template))

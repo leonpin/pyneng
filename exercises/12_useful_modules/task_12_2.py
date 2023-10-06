@@ -36,15 +36,20 @@
 """
 
 import ipaddress
+import re
 
 def convert_ranges_to_ip_list(ip_list):
     result = []
+
+
     for ip in ip_list:
         addr = []
         if '-' in ip:
             ip1, ip2 = ip.split('-')
             if '.' not in ip2:
-                ip2 = f"{'.'.join(ip1.split('.')[:-1])}.{ip2}"
+                ip2 = re.search(r'\d\.\d\.\d\.',ip1).group()+ip2
+
+                #ip2 = f"{'.'.join(ip1.split('.')[:-1])}.{ip2}"
             ip1 = ipaddress.ip_address(ip1)
             ip2 = ipaddress.ip_address(ip2)
             for i in range(int(ip1), int(ip2)+1):

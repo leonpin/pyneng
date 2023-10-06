@@ -28,8 +28,8 @@ import re
 
 def parse_sh_cdp_neighbors(outp):
     result = {}
-    name = re.search(r'(\S+)[>#]',outp).group(1)
-    regexp = (r'(?P<dev>\w+) +(?P<linf>\S+ \S+) +\d+ +[\w ]+ +\S+ +(?P<port>\S+ \S+)')
+    name = re.search(r'(\S+)[>#]', outp).group(1)
+    regexp = (r'(?P<dev>\w+) +(?P<linf>\S+ \S+) +\d+ +[\w ]+\S+ +(?P<port>\S+ \S+)')
     match = re.finditer(regexp, outp)
     result[name] = {m.group('linf'): {m.group('dev'): m.group('port')} for m in match}
     return result

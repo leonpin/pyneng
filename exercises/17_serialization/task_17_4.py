@@ -67,7 +67,6 @@ def write_last_log_to_csv(source_log, output):
         writer.writeheader()
         for row in new_data.values():
             writer.writerow(row)
-#    print(new_data)
     return
 
 if __name__ == "__main__":

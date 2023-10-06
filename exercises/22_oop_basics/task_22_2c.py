@@ -63,3 +63,65 @@ ValueError                                Traceback (most recent call last)
 ValueError: При выполнении команды "logging 0255.255.1" на устройстве 192.168.100.1 возникла ошибка -> Invalid input detected at '^' marker.
 
 """
+import telnetlib
+import re
+from textfsm import clitable
+
+class CiscoTelnet:
+    def __init__(self, ip, username, password, secret):
+        self.ip = ip
+        self.telnet = telnetlib.Telnet(ip)
+        self.telnet.read_until(b'Username')
+        self._write_line(username)
+        self.telnet.read_until(b'Password')
+        self._write_line(password)
+        self._write_line('enable')
+        self.telnet.read_until(b'Password')
+        self._write_line(secret)
+        self.telnet.read_until(b'#', timeout=5)
+
+    def _write_line(self, line):
+        self.telnet.write(line.encode('ascii') + b'\n')
+
+    def send_show_command(self, command, parse=True, templates='templates', index='index'):
+        self._write_line(command)
+        output = self.telnet.read_until(b'#', timeout=5).decode('ascii')
+        if parse:
+            clit = clitable.CliTable(index, templates)
+            clit.ParseCmd(output, {'Command': command})
+            output = [dict(zip(clit.header, row)) for row in clit]
+        return output
+
+    def send_config_commands(self, commands, strict=True):
+        output = ''
+        if type(commands) == str:
+            commands = [commands]
+        for command in ['conf t', *commands, 'end']:
+            self._write_line(command)
+            reply = self.telnet.read_until(b'#', timeout=5).decode('ascii')
+            error = re.search('% (.+)', reply)
+            if error:
+                message = (f'При выполнении команды "{command}" на устройстве '
+                           f'{self.ip} возникла ошибка -> {error.group(1)}')
+                if strict:
+                    raise ValueError(message)
+                else:
+                    print(message)
+            output += reply
+        return output
+
+    def con_close(self):
+        self.telnet.close()
+
+if __name__ == '__main__':
+    r1_params = {
+        'ip': '192.168.100.1',
+        'username': 'cisco',
+        'password': 'cisco',
+        'secret': 'cisco'}
+    commands_with_errors = ['logging 0255.255.1', 'logging', 'a']
+    correct_commands = ['logging buffered 20010', 'ip http server']
+    commands = commands_with_errors+correct_commands
+    r1 = CiscoTelnet(**r1_params)
+    print(r1.send_config_commands(commands, strict=True))
+    r1.con_close()

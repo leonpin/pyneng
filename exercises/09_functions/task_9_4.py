@@ -59,11 +59,8 @@ def ignore_command(command, ignore):
     * True, если в команде содержится слово из списка ignore
     * False - если нет
     """
-    ignore_status = False
-    for word in ignore:
-        if word in command:
-            ignore_status = True
-    return ignore_status
+
+    return any([word in command for word in ignore])
 
 def convert_config_to_dict(config_filename):
     with open(config_filename) as f:
@@ -71,11 +68,12 @@ def convert_config_to_dict(config_filename):
         for line in f:
             line = line.rstrip()
             if line and not (line.startswith('!') or ignore_command(line, ignore)):
-                if not line.startswith(' '):
-                    mc = line.strip()
+                if line[0].isalnum():
+                    mc = line
                     result[mc] = []
                 else:
-                    result[mc].append(line.strip())
+                    result[mc].append(line.lstrip())
+
         return result
 
 #print(convert_config_to_dict('config_sw1.txt'))

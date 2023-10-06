@@ -38,9 +38,9 @@ def get_ip_from_cfg(config_file):
     with open(config_file) as f:
         match = re.finditer(regex,f.read())
         for m in match:
-            if m.lastgroup == 'intf':
+            if m.group('intf'):
                 i = m.group('intf')
-            elif m.lastgroup == 'mask':
+            else:
                 result.setdefault(i, [])
                 result[i].append(m.group('addr', 'mask'))
     return result

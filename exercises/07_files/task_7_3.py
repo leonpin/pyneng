@@ -22,8 +22,8 @@
 """
 with open('CAM_table.txt','r') as f:
     for line in f:
-        line = line.split()
+        line = line.strip()
         #print(line)
-        if line and line[0][0].isdigit():
-            vlan, mac, vtype, port = line
+        if line and line[0].isdigit():
+            vlan, mac, _, port = line.split()
             print ('{:<8} {} {:>10}'.format(vlan, mac, port))

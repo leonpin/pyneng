@@ -23,7 +23,7 @@ with open('CAM_table.txt','r') as f:
     for line in f:
         line = line.split()
         if line and line[0] == v:
-            vlan, mac, vtype, port = line
+            vlan, mac, _, port = line
             result.append([int(vlan),mac,port])
     result = sorted(result)
     for line in result:

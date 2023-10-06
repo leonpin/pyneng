@@ -44,3 +44,15 @@ topology_example = {
     ("SW1", "Eth0/2"): ("R2", "Eth0/0"),
     ("SW1", "Eth0/3"): ("R3", "Eth0/0"),
 }
+
+class Topology:
+    def __init__(self, topology_example):
+        topology = {}
+        for key, value in topology_example.items():
+            if not topology.get(value) == key:
+                topology[key] = value
+        self.topology = topology
+
+if __name__ == "__main__":
+    top = Topology(topology_example)
+    print (top.topology)

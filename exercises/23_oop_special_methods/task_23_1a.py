@@ -31,3 +31,30 @@ In [12]: print(ip_list)
 [IPAddress('10.1.1.1/24')]
 
 """
+import re
+
+class IPAddress:
+    def __init__(self, ip_str):
+        match = re.search(r'(\d+)\.(\d+)\.(\d+)\.(\d+)/(\d+)', ip_str)
+        if match:
+            if not(int(match.group(5)) in range(8, 33)):
+                raise ValueError('Incorrect mask')
+            if not all([int(i) in range(0, 256) for i in match.groups()[0:4]]):
+                raise ValueError('Incorrect IPv4 address')
+            self.mask = int(match.group(5))
+            self.ip = '.'.join(match.groups()[0:4])
+        else:
+            raise ValueError('Incorrect IPv4 address')
+
+    def __str__(self):
+        return f'IP address {self.ip}/{self.mask}'
+
+    def __repr__(self):
+        return f"IPAddress('{self.ip}/{self.mask}')"
+
+if __name__ == '__main__':
+    ip1 = IPAddress('10.1.1.11/24')
+    print(ip1)
+    ip_list = []
+    ip_list.append(ip1)
+    print(ip_list)

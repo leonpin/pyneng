@@ -33,9 +33,10 @@ def generate_description_from_cdp(file):
     regex = r'(?P<dev>\w+) +(?P<l_intf>\S+ \S+) +\d+ + [\w ]+ +\S+ +(?P<r_intf>\S+ \S+)'
     result = {}
     with open(file) as f:
-        match = re.finditer(regex, f.read())
-        for m in match:
-            result[m.group('l_intf')] = template.format(*m.group('dev', 'r_intf'))
+        #match = re.finditer(regex, f.read())
+        result = {m.group('l_intf'): template.format(*m.group('dev', 'r_intf')) for m in re.finditer(regex, f.read())}
+        #for m in match:
+            #result[m.group('l_intf')] = template.format(*m.group('dev', 'r_intf'))
     return result
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@ from tabulate import tabulate
 
 def print_ip_table(ipr, ipu):
     result = {'Reachable': ipr, 'Unreachable': ipu}
-    print(tabulate(result, headers='keys'))
+    print(tabulate(result, headers='keys', tablefmt='pipe'))
     return
 
 if __name__ == "__main__":
